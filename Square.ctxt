@@ -1,0 +1,18 @@
+#BlueJ class context
+comment0.target=Square
+comment0.text=\n\ Write\ a\ description\ of\ class\ Square\ here.\n\n\ @author\ (your\ name)\n\ @version\ (a\ version\ number\ or\ a\ date)\n
+comment1.params=
+comment1.target=Square()
+comment2.params=xPos\ yPos
+comment2.target=Square(int,\ int)
+comment3.params=isFilled\ letter
+comment3.target=void\ setIsFilled(boolean,\ Tile)
+comment4.params=
+comment4.target=int\ getXPos()
+comment5.params=
+comment5.target=int\ getYPos()
+comment6.params=
+comment6.target=boolean\ getIsFilled()
+comment7.params=
+comment7.target=java.lang.String\ toString()
+numComments=8
