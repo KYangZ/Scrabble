@@ -1,8 +1,8 @@
 
 /**
- * Write a description of class Square here.
+ * Square object that is a part of the Scrabble Gameboard
  *
- * @author (your name)
+ * @author Kristy Lee, Kory Yang
  * @version (a version number or a date)
  */
 public class Square{

@@ -2,7 +2,7 @@
 /**
  * Tile object of a letter
  *
- * @author (your name)
+ * @author Kristy Lee, Kory Yang
  * @version (a version number or a date)
  */
 public class Tile
@@ -14,6 +14,7 @@ public class Tile
     /**
      * Constructor for objects of class Tile
      */
+    
     public Tile(){
        
     }
