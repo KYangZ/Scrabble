@@ -7,11 +7,10 @@
  */
 public class Tester
 {
-    // instance variables - replace the example below with your own
+
    public static void main(String[] args){
       Gameboard game = new Gameboard();
-      game.runScrabble();
-      //game.importWordList();
-      //game.printFileData();
+    //  game.runScrabble();
+      
     }
 }
