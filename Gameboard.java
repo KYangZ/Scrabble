@@ -13,11 +13,12 @@ import java.util.Collections;
 public class Gameboard{
     
     private ArrayList<String> word_list = new ArrayList<String>();
-    private ArrayList<String> bag = new ArrayList<String>();
+    private ArrayList<String> bag = new ArrayList<String>(); //this will be split among the players
     private int w = 15;
     private int h = 15;
     private Square[][] grid = new Square[w+2][h+2]; //15x15 grid with one-square border around it
     private Scanner in = new Scanner(System.in);
+    private Player[] players = new Player[2];
     
     /**
      * Constructor for objects of class Gameboard
@@ -29,13 +30,22 @@ public class Gameboard{
              grid[i][j] = new Square(i, j);
             }
         }
-        
-        importWordList();
-        
-        
+           
+       players[0] = new Player(); players[1] = new Player();
+            
+       importWordList();
+       distributeLetterBag(); 
         
     }
 
+    public void distributeLetterBag(){
+        //fill the bag with letters and their point values
+        //distribute the bags contents evenly between the two players
+        
+        //pass a string arraylist of letters to each player's setter method
+        
+    }
+    
     public void importWordList(){ //import list of valid words
         try{
              Scanner sc = new Scanner(new File ("words_alpha.txt"));
