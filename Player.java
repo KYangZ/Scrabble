@@ -1,4 +1,4 @@
-
+import java.util.*;
 /**
  * Write a description of class Player here.
  *
@@ -7,27 +7,38 @@
  */
 public class Player
 {
-    // instance variables - replace the example below with your own
-    private int x;
+    private int points;
+    //private ArrayList<String> collectionLetters = new ArrayList<String>();
+    private ArrayList<Tile> playerBag = new ArrayList<Tile>();
 
-    /**
-     * Constructor for objects of class Player
-     */
-    public Player()
-    {
-        // initialise instance variables
-        x = 0;
+    public Player(){
+       this.points = 0;
     }
-
-    /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
-     */
-    public int sampleMethod(int y)
-    {
-        // put your code here
-        return x + y;
+    
+    public void addPoints(int points){
+        this.points += points;
+    }   
+    
+    public int getPoints(){
+        return this.points;
     }
+    
+    public ArrayList<Tile> getPlayerBagArray(){
+        return playerBag;
+    }
+    
+    public String printPlayerBag(){
+        String lettersInBag = "";
+        for (int i = 0; i < playerBag.size(); i++){
+            lettersInBag += playerBag.get(i) + " "; //uses toString method
+        }
+        return lettersInBag;
+    }
+    
+    public void buildPlayerBag(String letter){
+        playerBag.add(new Tile(letter.charAt(0))); //add letter to Tile object
+    }
+    
+    
+    
 }
