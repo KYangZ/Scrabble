@@ -105,7 +105,7 @@ public class Gameboard{
                 System.out.print("   " + i + " ");
             }
            
-            for (int j = 0; j < h+1; j++){ //excludes printing of the "out of bounds" border
+            for (int j = 1; j < h+1; j++){ //excludes printing of the "out of bounds" border
                 System.out.print(grid[i][j]); 
             }
             System.out.println();
