@@ -20,10 +20,7 @@ public class Gameboard{
     private Scanner in = new Scanner(System.in);
     private Player[] players = new Player[2];
     private Random rand = new Random();
-    
-    /**
-     * Constructor for objects of class Gameboard
-     */
+   
     public Gameboard()
     {
        for (int i = 0; i < w+2; i++){
@@ -38,7 +35,7 @@ public class Gameboard{
        distributeLetterBag(); 
     }
 
-    public void makeLetterBag(){ //populates Scrabble bag with all the letters found in Scrabble
+    public void makeLetterBag(){ //Executed one time only. Populates Scrabble bag with all the letters found in Scrabble
         for (int i = 0; i < 9; i++){
             bag.add("A"); bag.add("I");
         }
@@ -70,7 +67,6 @@ public class Gameboard{
                  word = sc.next();
                  word_list.add(word);
              }
-             //System.out.println(word_list.get(7));
              sc.close();
         }catch (IOException io){
          System.out.println("Error: " + io.getMessage());   
@@ -82,6 +78,14 @@ public class Gameboard{
         for (int i = 0; i < 7; i++){ //distribute 7 letters randomly to each player
            players[0].buildPlayerBag(bag.remove(rand.nextInt(bag.size())));
            players[1].buildPlayerBag(bag.remove(rand.nextInt(bag.size())));
+        }
+    }
+    
+    public void refillPlayerBag(int p){
+        ArrayList<Tile> playerBag = players[p].getPlayerBagArrayList();
+        int numberToRefill = 7 - playerBag.size();
+        for (int i = 0; i < numberToRefill; i++){ //distribute new letters randomly to each player. The player now should have 7 letters in total
+           players[p].buildPlayerBag(bag.remove(rand.nextInt(bag.size())));
         }
     }
     
@@ -117,32 +121,35 @@ public class Gameboard{
     public void runScrabble(){
         boolean isRunning = true;
         boolean valid = true;
+        boolean passTurn = false;
         int player = 0;
-        String word = "";
         String wordTest = "";
-        int counter = 0;
+        int counter = 0; //counts number of consecutive passes
         
-        game_loops:
+        game_loops: //placed here because if there are consecutive passes, break out of all loops and terminate game
         do{
             printPlayerLettersAndPoints(); //prints player's available tiles and the points he/she has
             output_grid();
             do{
                 do{
-                    System.out.print("It's your turn, Player " + (player+1) + "! What word would you like to include on the board? Make sure your word is only 7 letters long. If you want to pass your turn to the next player, write 'pass!' ");
-                    wordTest = in.next();
-                    if(wordTest.length() >= 8 || wordTest.length() == 0)
-                        System.out.println("Your word is too long! Try again. ");
-                        
-                    if(wordTest.equalsIgnoreCase("pass!")){
+                    System.out.println();
+                    System.out.println("It's your turn, Player " + (player+1) + "! What word would you like to include on the board?"); 
+                    System.out.print("Make sure your word is only 7 letters long. If you want to pass your turn to the next player, write 'pass turn' ");
+                    wordTest = in.nextLine();
+                    wordTest = wordTest.toUpperCase();
+                    wordTest = validWordTest(wordTest);
+                    
+                    if(wordTest.equalsIgnoreCase("pass turn")){ //verified to work
                         counter++;
                         if (counter == 1){
                             //switch player
                             if (player == 0) player = 1;   
                             else player = 0;
-                            wordTest = "LOLOLOLOL"; // to redo the do-while loop again
                         }
                         else {
+                            System.out.println();
                             System.out.println("Both players have ended the game. ");
+                            System.out.println();
                             printPlayerLettersAndPoints();
                             output_grid();
                             System.out.println("Game over! ");
@@ -150,16 +157,19 @@ public class Gameboard{
                             break game_loops; //permanently terminates game
                         }
                     }
+                    else{
+                        if(wordTest.length() >= 8 || wordTest.length() == 0) //verified to work
+                        System.out.println("Your word is too long! Try again. ");
+                    }
                     
-                }while (wordTest.length() < 8 && wordTest.length() > 0);
+                }while (wordTest.length() >= 8 || wordTest.length() <= 0);
                 
-                wordTest = wordTest.toUpperCase();
-                word = validWordTest(wordTest);
-                System.out.println(word + " passed valid word test!");//passed valid word test at this point (the word is found in the Scrabble Dictionary)
-                System.out.println();
                 
-            } while(checkPlayerLetters(word, player));  //need method to check if the person has the available letters to make the word
-            
+                System.out.println(wordTest + " is a word!");//passed valid word test at this point (the word is found in the Scrabble Dictionary)
+               
+                
+            } while(!checkPlayerLetters(wordTest, player));  //need method to check if the person has the available letters to make the word
+            System.out.println("You can play this word! ");
             counter = 0; //the player hasn't passed his turn by this point of the game
             
             boolean isValid = true; int r = 0; int c = 0;
@@ -182,17 +192,22 @@ public class Gameboard{
             
             String orientation = "lol";
             while (orientation.toLowerCase().charAt(0) != 'v' && orientation.toLowerCase().charAt(0) != 'h'){
-                System.out.print("Place " + word + " vertically or horizontally? Type 'v' for vertical and 'h' for horizontal. ");
+                System.out.print("Place " + wordTest + " vertically or horizontally? Type 'v' for vertical and 'h' for horizontal. ");
                 orientation = in.next();
             }
             
             
             //implement scrabble rules after. check using "validMove" method
-            //validMove(r,c,orientation,word);
+            //make new method validMove(r,c,orientation,word);
             //somehow, if this isn't a valid move, the row, the column, the orientation, and maybe even the word must be reinputted by user
+            //if the player gives up midway through the list of questions for orientation, row, column, etc, there needs 
+            //to be a way for the player to say "pass turn" to give his turn to the other player
+            //use passTurn variable instantatiated above
             
+            //when the entire move is validated, you must remove the letters used to make that word from the player's bag
+           
             //refill player's bag after subtracting letters
-            //playerBagRefill(player);
+            refillPlayerBag(player);
             
             //System.out.println(word + " has been added to the board. ");
             System.out.println();
@@ -207,10 +222,13 @@ public class Gameboard{
     public String validWordTest(String word){ //tested and verified to work
         boolean invalidWord = true;
         do{
-            if (!(word_list.contains(word))){ //invalid word
+            if  (word.equalsIgnoreCase("pass turn")){
+                invalidWord = false;
+            } 
+            else if(!(word_list.contains(word))){ //invalid word
                 System.out.print("Invalid word. Re-enter a correct word. ");
                 invalidWord = true;
-                word = in.next();
+                word = in.nextLine();
                 word = word.toUpperCase();
             }
             else{ //valid word
@@ -228,8 +246,8 @@ public class Gameboard{
         
         for (int i = 0; i < word.length(); i++){
             for (int j = 0; j < playerBag.size(); j++){
-                if (word.substring(i,i+1) == playerBag.get(j).toString()){
-                    count++;
+                if (word.substring(i,i+1).equals(playerBag.get(j).toString())){
+                    count = count + 1;
                 }
             }
             
@@ -253,14 +271,12 @@ public class Gameboard{
     }
     
     public void determineWinner(){
-        if (players[0].getPoints() > players[1].getPoints()){
+        if (players[0].getPoints() > players[1].getPoints())
             System.out.println("Player 1 wins!");
-            
-        }
-        
-        else 
+        else if (players[1].getPoints() > players[0].getPoints())
             System.out.println("Player 2 wins!");
-        
+        else
+            System.out.println("It's a tie!");
     }
     
     //public void graphics
