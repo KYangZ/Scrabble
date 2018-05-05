@@ -4,9 +4,9 @@ Tell the reader (someone who does not know anything about this project)
 all he/she needs to know. The comments should usually include at least:
 ------------------------------------------------------------------------
 
-PROJECT TITLE:
+PROJECT TITLE: Scrabble Game
 PURPOSE OF PROJECT:
-VERSION or DATE:
+VERSION or DATE: Copyright 2018. All Rights Reserved.
 HOW TO START THIS PROJECT:
-AUTHORS:
+AUTHORS: Kristy Lee, Kory Yang
 USER INSTRUCTIONS:
