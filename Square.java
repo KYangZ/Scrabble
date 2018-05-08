@@ -37,12 +37,20 @@ public class Square{
         return this.isFilled;
     }
     
+    public void placeTile(Tile letter){
+        this.letter = letter;
+    }
+    
+    public Tile getTile(){
+         return this.letter;
+    }
+    
     public String toString(){
         if (isFilled){
-           return this.letter.toString();
+           return this.letter.toString() + " ";
         }
         else{
-         return " ";   
+         return "_ ";   
         }
     }
 
