@@ -125,6 +125,9 @@ public class Gameboard{
         int player = 0;
         String wordTest = "";
         int counter = 0; //counts number of consecutive passes
+        String appendTo = "";
+        boolean firstTurn = true;
+        
         
         game_loops: //placed here because if there are consecutive passes, break out of all loops and terminate game
         do{
@@ -137,7 +140,16 @@ public class Gameboard{
                     System.out.print("Make sure your word is only 7 letters long. If you want to pass your turn to the next player, write 'pass turn' ");
                     wordTest = in.nextLine();
                     wordTest = wordTest.toUpperCase();
-                    wordTest = validWordTest(wordTest);
+                    
+                    if (firstTurn){
+                        wordTest = validWordTest(wordTest, appendTo.toUpperCase());
+                    }
+                    else{
+                        System.out.print("What letter are you appending the letter to? ");
+                        appendTo = in.next(); 
+                        wordTest = validWordTest(wordTest, appendTo.toUpperCase());
+                    }
+                   
                     
                     if(wordTest.equalsIgnoreCase("pass turn")){ //verified to work
                         counter++;
@@ -158,8 +170,8 @@ public class Gameboard{
                         }
                     }
                     else{
-                        if(wordTest.length() >= 8 || wordTest.length() == 0) //verified to work
-                        System.out.println("Your word is too long! Try again. ");
+                        if(wordTest.length() >= 9 || wordTest.length() == 0) //verified to work
+                        System.out.println("Your sequence of words is too long! Try again. ");
                     }
                     
                 }while (wordTest.length() >= 8 || wordTest.length() <= 0);
@@ -172,23 +184,27 @@ public class Gameboard{
             System.out.println("You can play this word! ");
             counter = 0; //the player hasn't passed his turn by this point of the game
             
-            boolean isValid = true; int r = 0; int c = 0;
-            //ask for positioning of word
-            do{
-                System.out.print("Which row would you like the first letter of the word to begin at? ");
-                r = in.nextInt();
-                if (r < 1 && r > 15) isValid = false;  
-                else isValid = true;
-                
-             } while(!isValid);
             
-            do{
-                System.out.print("Which column? ");
-                c = in.nextInt();
-                if (c < 1 && c > 15) isValid = false; 
-                else isValid = true;
+            if (firstTurn){
+                firstTurn = false;
+                boolean isValid = true; int r = 0; int c = 0;
+                //ask for positioning of word
+                do{
+                    System.out.print("Which row would you like the first letter of the word to begin at? ");
+                    r = in.nextInt();
+                    if (r < 1 && r > 15) isValid = false;  
+                    else isValid = true;
+                    
+                 } while(!isValid);
                 
-            } while(!isValid);
+                do{
+                    System.out.print("Which column? ");
+                    c = in.nextInt();
+                    if (c < 1 && c > 15) isValid = false; 
+                    else isValid = true;
+                    
+                } while(!isValid);
+            }
             
             String orientation = "lol";
             while (orientation.toLowerCase().charAt(0) != 'v' && orientation.toLowerCase().charAt(0) != 'h'){
@@ -219,24 +235,49 @@ public class Gameboard{
         
     }
     
-    public String validWordTest(String word){ //tested and verified to work
+    public String validWordTest(String word, String appendTo){ //tested and verified to work
         boolean invalidWord = true;
-        do{
-            if  (word.equalsIgnoreCase("pass turn")){
-                invalidWord = false;
-            } 
-            else if(!(word_list.contains(word))){ //invalid word
-                System.out.print("Invalid word. Re-enter a correct word. ");
-                invalidWord = true;
-                word = in.nextLine();
-                word = word.toUpperCase();
-            }
-            else{ //valid word
-                invalidWord = false;
-            }
-        }while(invalidWord);
+        if (appendTo.isEmpty()){
+            do{
+                if  (word.equalsIgnoreCase("pass turn")){
+                    invalidWord = false;
+                } 
+                else if(!(word_list.contains(word))){ //invalid word
+                    System.out.print("Invalid word. Re-enter a correct word. ");
+                    invalidWord = true;
+                    word = in.nextLine();
+                    word = word.toUpperCase();
+                }
+                else{ //valid word
+                    invalidWord = false;
+                }
+            }while(invalidWord);
+        }
         
-        return word;
+        else{
+             do{
+                if  (word.equalsIgnoreCase(appendTo + "pass turn")){
+                    invalidWord = false;
+                } 
+                else if(!(word_list.contains(word))){ //invalid word
+                    System.out.print("Invalid word. Re-enter a correct word. ");
+                    invalidWord = true;
+                    word = in.nextLine();
+                    word = appendTo.substring(0,1) + word.toUpperCase();
+                }
+                else{ //valid word
+                    invalidWord = false;
+                }
+            }while(invalidWord);
+            
+        }
+        
+        if  (word.equalsIgnoreCase(appendTo + "pass turn")){
+             return word.substring(1);
+        }
+        else{
+            return word;
+        }
     }
     
     public boolean checkPlayerLetters(String word, int p){
@@ -265,7 +306,7 @@ public class Gameboard{
     }
     
     public boolean validMove(int r, int c, String orientation, String word){ 
-        
+       
         
         return false;
     }
