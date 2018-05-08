@@ -219,7 +219,7 @@ public class Gameboard{
                         for (int j = playerBag.size() - 1; j > -1; j--){
                             if (wordTest.substring(i,i+1).equals(playerBag.get(j).toString())){
                                 players[player].playerBag.get(j).setStatusVertical();//these tiles are vertical
-                                for(int k = r; k <= wordTest.length() + r; k++){
+                                for(int k = r; k < wordTest.length() + r; k++){
                                     grid[k][c].placeTile(players[player].playerBag.get(j));
                                 }
                                 
