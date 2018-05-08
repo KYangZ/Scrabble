@@ -151,7 +151,7 @@ public class Gameboard{
                     }
                    
                     
-                    if(wordTest.equalsIgnoreCase("pass turn")){ //verified to work
+                    if(wordTest.equalsIgnoreCase(appendTo + "pass turn")){ //verified to work
                         counter++;
                         if (counter == 1){
                             //switch player
@@ -271,13 +271,9 @@ public class Gameboard{
             }while(invalidWord);
             
         }
-        
-        if  (word.equalsIgnoreCase(appendTo + "pass turn")){
-             return word.substring(1);
-        }
-        else{
+      
             return word;
-        }
+        
     }
     
     public boolean checkPlayerLetters(String word, int p){
