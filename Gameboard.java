@@ -183,7 +183,7 @@ public class Gameboard{
             } while(!checkPlayerLetters(wordTest, player));  //need method to check if the person has the available letters to make the word
             System.out.println("You can play this word! ");
             counter = 0; //the player hasn't passed his turn by this point of the game
-            
+            ArrayList<Tile> playerBag = players[player].getPlayerBagArrayList();
             
             if (firstTurn){
                 firstTurn = false;
@@ -204,13 +204,43 @@ public class Gameboard{
                     else isValid = true;
                     
                 } while(!isValid);
+                
+                String orientation = "lol";
+                while (orientation.charAt(0) != 'v' && orientation.charAt(0) != 'h'){
+                    System.out.print("Place " + wordTest + " vertically or horizontally? Type 'v' for vertical and 'h' for horizontal. ");
+                    orientation = in.next();
+                    orientation = orientation.toLowerCase();
+                }
+                
+                if (orientation.charAt(0) == 'v'){
+                
+       
+                     for (int i = 0; i < wordTest.length(); i++){
+                        for (int j = playerBag.size() - 1; j > -1; j--){
+                            if (wordTest.substring(i,i+1).equals(playerBag.get(j).toString())){
+                                players[player].playerBag.get(j).setStatusVertical();//these tiles are vertical
+                                for(int k = r; k <= wordTest.length() + r; k++){
+                                    grid[k][c].placeTile(players[player].playerBag.get(j));
+                                }
+                                
+                            }
+                        }
+                    
+               
+                    }
+                    
+                    
+                }
+                else{
+                    
+                }
+            }
+            else{//not the first turn
+                
+                
             }
             
-            String orientation = "lol";
-            while (orientation.toLowerCase().charAt(0) != 'v' && orientation.toLowerCase().charAt(0) != 'h'){
-                System.out.print("Place " + wordTest + " vertically or horizontally? Type 'v' for vertical and 'h' for horizontal. ");
-                orientation = in.next();
-            }
+            
             
             
             //implement scrabble rules after. check using "validMove" method

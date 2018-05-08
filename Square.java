@@ -20,9 +20,8 @@ public class Square{
         this.isFilled = false;
     }
     
-    public void setIsFilled(boolean isFilled, Tile letter){
+    public void setIsFilled(){
         this.isFilled = true;
-        this.letter = letter;
     }
     
     public int getXPos(){
@@ -39,6 +38,7 @@ public class Square{
     
     public void placeTile(Tile letter){
         this.letter = letter;
+        setIsFilled();
     }
     
     public Tile getTile(){
