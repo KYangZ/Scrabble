@@ -9,7 +9,7 @@ public class Player
 {
     private int points;
     //private ArrayList<String> collectionLetters = new ArrayList<String>();
-    private ArrayList<Tile> playerBag = new ArrayList<Tile>();
+    public ArrayList<Tile> playerBag = new ArrayList<Tile>();
 
     public Player(){
        this.points = 0;
