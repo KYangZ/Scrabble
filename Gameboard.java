@@ -138,6 +138,7 @@ public class Gameboard{
                     System.out.print("Make sure you type 7 letters at most (in order). If you want to pass your turn to the next player, write 'pass turn' ");
                     wordTest = in.nextLine();
                     wordTest = wordTest.toUpperCase();
+                    appendTo = "";
                     
                     if (wordTest.equalsIgnoreCase("pass turn")){
                     }
