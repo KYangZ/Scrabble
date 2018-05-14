@@ -9,7 +9,6 @@ import java.util.Collections;
  * @version (a version number or a date)
  */
 
-
 public class Gameboard{
     
     private ArrayList<String> word_list = new ArrayList<String>();
@@ -29,7 +28,7 @@ public class Gameboard{
             }
         }
            
-       players[0] = new Player(); players[1] = new Player();
+       players[0] = new Player(); players[1] = new Player(); //create two players
             
        importWordList();
        distributeLetterBag(); 
@@ -62,7 +61,7 @@ public class Gameboard{
              String temp = sc.nextLine(); //Scrabble word list copyright information
              temp = sc.nextLine(); //empty line. 
              
-             //now start adding words to the word_list
+             //now start adding actual words to the word_list
              while (sc.hasNextLine()){
                  word = sc.next();
                  word_list.add(word);
@@ -127,31 +126,44 @@ public class Gameboard{
         int counter = 0; //counts number of consecutive passes
         String appendTo = "";
         boolean firstTurn = true;
-        
-        
+        boolean front = false;
+        boolean back = false;
+        String appendToDirection = " ";
+       
         game_loops: //placed here because if there are consecutive passes, break out of all loops and terminate game
         do{
             printPlayerLettersAndPoints(); //prints player's available tiles and the points he/she has
             output_grid();
             do{
                 do{
+                    front = false;
+                    back = false;
+                    appendTo = "";
+                    
                     System.out.println();
-                    System.out.println("It's your turn, Player " + (player+1) + "! What word would you like to include on the board?"); 
-                    System.out.print("Make sure your word is only 7 letters long. If you want to pass your turn to the next player, write 'pass turn' ");
+                    System.out.println("It's your turn, Player " + (player+1) + "! What letters would you like to place on the board?"); 
+                    System.out.print("Make sure you type 7 letters at most (in order). If you want to pass your turn to the next player, write 'pass turn' ");
                     wordTest = in.nextLine();
                     wordTest = wordTest.toUpperCase();
                     
-                    if (firstTurn){
-                        wordTest = validWordTest(wordTest, appendTo.toUpperCase());
+                    if (wordTest.equalsIgnoreCase("pass turn")){
                     }
-                    else{
+                    else if(firstTurn){
+                        wordTest = validWordTest(wordTest, appendTo.toUpperCase(), appendToDirection);
+                    }
+                    else if (!firstTurn){
                         System.out.print("What letter are you appending the letter to? ");
-                        appendTo = in.next(); 
-                        wordTest = validWordTest(wordTest, appendTo.toUpperCase());
+                        appendTo = in.nextLine(); 
+                        do{
+                            System.out.print("Is this letter at the beginning of the word or at the end? Type 'f' for front or 'b' for back ");
+                            appendToDirection = in.nextLine();
+                        }while (! (appendToDirection.substring(0,1).equalsIgnoreCase("b")) && ! (appendToDirection.substring(0,1).equalsIgnoreCase("f")));   
+                        
+                        wordTest = validWordTest(wordTest, appendTo.toUpperCase(), appendToDirection.substring(0,1).toLowerCase());
                     }
                    
                     
-                    if(wordTest.equalsIgnoreCase(appendTo + "pass turn")){ //verified to work
+                    if(wordTest.equalsIgnoreCase(appendTo + "pass turn") || wordTest.equalsIgnoreCase("pass turn" + appendTo) ){ //verified to work
                         counter++;
                         if (counter == 1){
                             //switch player
@@ -176,22 +188,25 @@ public class Gameboard{
                     
                 }while (wordTest.length() >= 8 || wordTest.length() <= 0);
                 
-                
-                System.out.println(wordTest + " is a word!");//passed valid word test at this point (the word is found in the Scrabble Dictionary)
-               
+                if (appendToDirection.equalsIgnoreCase("f")){
+                    System.out.println(appendTo.toUpperCase() + wordTest + " is a word!");//passed valid word test at this point (the word is found in the Scrabble Dictionary)
+                }
+                else
+                    System.out.println(wordTest + appendTo.toUpperCase() + " is a word!");
                 
             } while(!checkPlayerLetters(wordTest, player));  //need method to check if the person has the available letters to make the word
             System.out.println("You can play this word! ");
             counter = 0; //the player hasn't passed his turn by this point of the game
-            
+            ArrayList<Tile> playerBag = players[player].getPlayerBagArrayList();
             
             if (firstTurn){
                 firstTurn = false;
-                boolean isValid = true; int r = 0; int c = 0;
+                boolean isValid = true; String rTemp = ""; int r = 0; String cTemp = ""; int c = 0;
                 //ask for positioning of word
                 do{
                     System.out.print("Which row would you like the first letter of the word to begin at? ");
-                    r = in.nextInt();
+                    rTemp = in.nextLine();
+                    r = Integer.parseInt(rTemp);
                     if (r < 1 && r > 15) isValid = false;  
                     else isValid = true;
                     
@@ -199,29 +214,114 @@ public class Gameboard{
                 
                 do{
                     System.out.print("Which column? ");
-                    c = in.nextInt();
+                    cTemp = in.nextLine();
+                    c = Integer.parseInt(cTemp);
                     if (c < 1 && c > 15) isValid = false; 
                     else isValid = true;
                     
                 } while(!isValid);
+                
+                String orientation = "lol";
+                while (orientation.charAt(0) != 'v' && orientation.charAt(0) != 'h'){
+                    System.out.print("Place " + wordTest + " vertically or horizontally? Type 'v' for vertical and 'h' for horizontal. ");
+                    orientation = in.nextLine();
+                    orientation = orientation.toLowerCase();
+                }
+                
+                boolean hasBeenUsed = false;
+   
+                for (int i = 0; i < wordTest.length(); i++){
+                    hasBeenUsed = false;
+                    for (int j = playerBag.size() - 1; j > -1; j--){
+                        if (wordTest.substring(i,i+1).equals(playerBag.get(j).toString()) && hasBeenUsed == false){
+                            if (orientation.charAt(0) == 'v'){
+                                players[player].playerBag.get(j).setStatusVertical();//these tiles are vertically oriented
+                                players[player].addPoints(players[player].playerBag.get(j).getValue());
+                                grid[r][c].placeTile(players[player].playerBag.remove(j));
+                                r++;
+                            }
+                            else {
+                                players[player].playerBag.get(j).setStatusHorizontal();//these tiles are horizontally oriented
+                                players[player].addPoints(players[player].playerBag.get(j).getValue());
+                                grid[r][c].placeTile(players[player].playerBag.remove(j));
+                                c++;
+                            }
+                            hasBeenUsed = true;
+                        }
+                    }
+                }
+            }
+            else{//not the first turn
+                boolean isValid = true; String rTemp = ""; int r = 0; String cTemp = ""; int c = 0;
+                //ask for positioning of word
+                do{
+                    System.out.print("Which row is the letter you'd like your word appended to located at? ");
+                    rTemp = in.nextLine();
+                    r = Integer.parseInt(rTemp);
+                    if (r < 1 && r > 15) isValid = false;  
+                    else isValid = true;
+                    
+                 } while(!isValid);
+                
+                 do{
+                    System.out.print("Which column? ");
+                    cTemp = in.nextLine();
+                    c = Integer.parseInt(cTemp);
+                    if (c < 1 && c > 15) isValid = false; 
+                    else isValid = true;
+                } while(!isValid);
+                
+                boolean horizontal = grid[r][c].getTile().getHorizontalStatus();
+                boolean vertical = grid[r][c].getTile().getVerticalStatus();
+                
+                if (horizontal && vertical){
+                   System.out.println("Sorry, you can't make this move."); 
+                }
+                else if (horizontal){
+                    boolean hasBeenUsed = false;
+                    if(appendToDirection.equalsIgnoreCase("f"))
+                        r++;
+                    else
+                        r-= wordTest.length();
+                        
+                    for (int i = 0; i < wordTest.length(); i++){
+                        hasBeenUsed = false;
+                        for (int j = playerBag.size() - 1; j > -1; j--){
+                            if (wordTest.substring(i,i+1).equals(playerBag.get(j).toString()) && hasBeenUsed == false){
+                                players[player].playerBag.get(j).setStatusVertical();//these tiles are vertically oriented
+                                players[player].addPoints(players[player].playerBag.get(j).getValue());
+                                grid[r][c].placeTile(players[player].playerBag.remove(j));
+                                r++;
+                              
+                                hasBeenUsed = true;
+                            }
+                        }
+                    }
+                }
+                else if (vertical){
+                    boolean hasBeenUsed = false;
+                    if (appendToDirection.equalsIgnoreCase("f"))
+                        c++;
+                    else
+                        c-=wordTest.length();
+                        
+                    for (int i = 0; i < wordTest.length(); i++){
+                        hasBeenUsed = false;
+                        for (int j = playerBag.size() - 1; j > -1; j--){
+                            if (wordTest.substring(i,i+1).equals(playerBag.get(j).toString()) && hasBeenUsed == false){
+                                players[player].playerBag.get(j).setStatusHorizontal();//these tiles are horizontally oriented
+                                players[player].addPoints(players[player].playerBag.get(j).getValue());
+                                grid[r][c].placeTile(players[player].playerBag.remove(j));
+                                c++;
+                                
+                                hasBeenUsed = true;
+                            }
+                        }
+                    }
+                }
+                 
             }
             
-            String orientation = "lol";
-            while (orientation.toLowerCase().charAt(0) != 'v' && orientation.toLowerCase().charAt(0) != 'h'){
-                System.out.print("Place " + wordTest + " vertically or horizontally? Type 'v' for vertical and 'h' for horizontal. ");
-                orientation = in.next();
-            }
-            
-            
-            //implement scrabble rules after. check using "validMove" method
-            //make new method validMove(r,c,orientation,word);
-            //somehow, if this isn't a valid move, the row, the column, the orientation, and maybe even the word must be reinputted by user
-            //if the player gives up midway through the list of questions for orientation, row, column, etc, there needs 
-            //to be a way for the player to say "pass turn" to give his turn to the other player
-            //use passTurn variable instantatiated above
-            
-            //when the entire move is validated, you must remove the letters used to make that word from the player's bag
-           
             //refill player's bag after subtracting letters
             refillPlayerBag(player);
             
@@ -231,48 +331,38 @@ public class Gameboard{
             if (player == 0) {player = 1;}//switch players now   
             else {player = 0;}
             
+            wordTest = ""; //reset
         }while(isRunning);
         
     }
     
-    public String validWordTest(String word, String appendTo){ //tested and verified to work
+    public String validWordTest(String word, String appendTo, String appendToDirection){ //tested and verified to work
         boolean invalidWord = true;
-        if (appendTo.isEmpty()){
-            do{
-                if  (word.equalsIgnoreCase("pass turn")){
+       
+          do{
+                if  (word.equalsIgnoreCase(appendTo + "pass turn") || word.equalsIgnoreCase("pass turn" + appendTo) ){
                     invalidWord = false;
                 } 
-                else if(!(word_list.contains(word))){ //invalid word
-                    System.out.print("Invalid word. Re-enter a correct word. ");
+                else if(!(word_list.contains(appendTo + word)) && appendToDirection.equalsIgnoreCase("f")  || (!(word_list.contains(word + appendTo)) && appendToDirection.equalsIgnoreCase("b"))){ //invalid word
+                    System.out.print("Invalid word. Re-enter the letters that can be appended to the letter inputed above. ");
                     invalidWord = true;
                     word = in.nextLine();
-                    word = word.toUpperCase();
-                }
-                else{ //valid word
-                    invalidWord = false;
-                }
-            }while(invalidWord);
-        }
-        
-        else{
-             do{
-                if  (word.equalsIgnoreCase(appendTo + "pass turn")){
-                    invalidWord = false;
-                } 
-                else if(!(word_list.contains(word))){ //invalid word
-                    System.out.print("Invalid word. Re-enter a correct word. ");
-                    invalidWord = true;
-                    word = in.nextLine();
-                    word = appendTo.substring(0,1) + word.toUpperCase();
+                    if (appendTo.isEmpty()){
+                        word = word.toUpperCase();   
+                    }
+                    else{
+                        if (appendToDirection.equalsIgnoreCase("b"))
+                             word = word.toUpperCase() + appendTo.substring(0,1).toUpperCase();
+                        else
+                            word = appendTo.substring(0,1).toUpperCase() + word.toUpperCase();
+                    }
                 }
                 else{ //valid word
                     invalidWord = false;
                 }
             }while(invalidWord);
             
-        }
-      
-            return word;
+        return word;
         
     }
     
@@ -282,12 +372,12 @@ public class Gameboard{
         int count = 0;
         
         for (int i = 0; i < word.length(); i++){
+            
             for (int j = 0; j < playerBag.size(); j++){
                 if (word.substring(i,i+1).equals(playerBag.get(j).toString())){
                     count = count + 1;
                 }
-            }
-            
+            }            
             if (count == 0){
                 System.out.println("Sorry! You can't play this word with the letters you have. Try again.");
                 return false;
