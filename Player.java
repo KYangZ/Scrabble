@@ -1,16 +1,18 @@
-import java.util.*;
+
 /**
  * Write a description of class Player here.
  *
  * @author (your name)
  * @version (a version number or a date)
  */
+
+import java.util.ArrayList;
+
 public class Player
 {
     private int points;
-    //private ArrayList<String> collectionLetters = new ArrayList<String>();
-    private ArrayList<Tile> playerBag = new ArrayList<Tile>();
-
+    public ArrayList<Tile> playerBag = new ArrayList<Tile>();
+    
     public Player(){
        this.points = 0;
     }
@@ -38,7 +40,4 @@ public class Player
     public void buildPlayerBag(String letter){
         playerBag.add(new Tile(letter.charAt(0))); //add letter to Tile object
     }
-    
-    
-    
 }

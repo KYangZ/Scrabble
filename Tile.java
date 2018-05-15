@@ -1,8 +1,8 @@
 
 /**
- * Tile object of a letter
+ * Write a description of class Tile here.
  *
- * @author Kristy Lee, Kory Yang
+ * @author (your name)
  * @version (a version number or a date)
  */
 public class Tile
@@ -10,14 +10,7 @@ public class Tile
     private int xPos, yPos;
     private char letter;
     private int value;
-
-    /**
-     * Constructor for objects of class Tile
-     */
-    
-    public Tile(){
-       
-    }
+    public Square location;
     
     public Tile(char letter){
         this.letter = letter;
@@ -73,5 +66,4 @@ public class Tile
     public String toString(){
         return this.letter + "";
     }
-    
 }
