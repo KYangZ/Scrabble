@@ -1,23 +1,15 @@
-
 /**
- * Tile object of a letter
+ * The Tile Class - Describes a placed letter on the board.
  *
- * @author Kristy Lee, Kory Yang
- * @version (a version number or a date)
+ * @Kristy Lee, Kory Yang
+ * @version 05152018
  */
 public class Tile
 {
     private int xPos, yPos;
     private char letter;
     private int value;
-
-    /**
-     * Constructor for objects of class Tile
-     */
-    
-    public Tile(){
-       
-    }
+    public Square location;
     
     public Tile(char letter){
         this.letter = letter;
@@ -73,5 +65,4 @@ public class Tile
     public String toString(){
         return this.letter + "";
     }
-    
 }
